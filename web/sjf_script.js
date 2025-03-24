@@ -1,9 +1,14 @@
 let processes = [];
 let isPreemptive = false;
 
-document.getElementById('preemptiveMode').addEventListener('change', function() {
-  isPreemptive = this.checked;
-});
+
+const preemptiveCheckbox = document.getElementById('preemptiveMode');
+if (preemptiveCheckbox) {
+  preemptiveCheckbox.addEventListener('change', function() {
+    isPreemptive = this.checked;
+  });
+}
+
 
 function addProcess() {
   const processId = document.getElementById('processId').value;
@@ -19,6 +24,7 @@ function addProcess() {
   updateProcessTable();
 }
 
+
 function updateProcessTable() {
   const tableBody = document.getElementById('processTable').querySelector('tbody');
   tableBody.innerHTML = '';
@@ -28,6 +34,7 @@ function updateProcessTable() {
     tableBody.innerHTML += row;
   });
 }
+
 
 function runSJF() {
   if (processes.length === 0) {
@@ -45,20 +52,46 @@ function runSJF() {
   let totalTurnaroundTime = 0;
   let completed = 0;
 
-  if (isPreemptive) {
-    while (completed !== processes.length) {
-      const availableProcesses = processes.filter(p => p.arrivalTime <= currentTime && p.remainingTime > 0);
+  function executeNextStep() {
+    if (completed === processes.length) {
+      const avgWaitingTime = totalWaitingTime / processes.length;
+      const avgTurnaroundTime = totalTurnaroundTime / processes.length;
 
-      if (availableProcesses.length === 0) {
-        currentTime++;
-        continue;
-      }
+      document.getElementById('avgWaitingTime').textContent = avgWaitingTime.toFixed(2);
+      document.getElementById('avgTurnaroundTime').textContent = avgTurnaroundTime.toFixed(2);
 
+      const finalTimeMarker = document.createElement('div');
+      finalTimeMarker.classList.add('time-marker');
+      finalTimeMarker.textContent = `${currentTime}`;
+      ganttChart.appendChild(finalTimeMarker);
+      return;
+    }
+
+    const availableProcesses = processes.filter(p => p.arrivalTime <= currentTime && p.remainingTime > 0);
+
+    if (availableProcesses.length === 0) {
+      currentTime++;
+      setTimeout(executeNextStep, 500);
+      return;
+    }
+
+    if (isPreemptive) {
       availableProcesses.sort((a, b) => a.remainingTime - b.remainingTime);
       const p = availableProcesses[0];
-
       p.remainingTime--;
       currentTime++;
+
+      const block = document.createElement('div');
+      block.classList.add('gantt-block');
+      block.style.width = `20px`;
+      block.style.backgroundColor = getRandomColor();
+      block.textContent = p.processId;
+      ganttChart.appendChild(block);
+
+      const timeMarker = document.createElement('div');
+      timeMarker.classList.add('time-marker');
+      timeMarker.textContent = `${currentTime}`;
+      ganttChart.appendChild(timeMarker);
 
       if (p.remainingTime === 0) {
         completed++;
@@ -72,18 +105,9 @@ function runSJF() {
         event.textContent = `Process ${p.processId} completed at ${currentTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}`;
         timeline.appendChild(event);
       }
-    }
-  } else {
-    const readyQueue = [...processes].sort((a, b) => a.arrivalTime - b.arrivalTime);
-
-    while (readyQueue.length > 0) {
-      const availableProcesses = readyQueue.filter(p => p.arrivalTime <= currentTime);
-      if (availableProcesses.length === 0) {
-        currentTime++;
-        continue;
-      }
+    } else {
       availableProcesses.sort((a, b) => a.burstTime - b.burstTime);
-      const p = availableProcesses.shift();
+      const p = availableProcesses[0];
 
       const startTime = Math.max(currentTime, p.arrivalTime);
       const endTime = startTime + p.burstTime;
@@ -111,15 +135,16 @@ function runSJF() {
       timeline.appendChild(event);
 
       currentTime = endTime;
+      p.remainingTime = 0;
+      completed++;
     }
+
+    setTimeout(executeNextStep, 500);
   }
 
-  const avgWaitingTime = totalWaitingTime / processes.length;
-  const avgTurnaroundTime = totalTurnaroundTime / processes.length;
-
-  document.getElementById('avgWaitingTime').textContent = avgWaitingTime.toFixed(2);
-  document.getElementById('avgTurnaroundTime').textContent = avgTurnaroundTime.toFixed(2);
+  executeNextStep();
 }
+
 
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
