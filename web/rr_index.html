@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="rr_style.css" />
+  <title>Round Robin Process Visualization</title>
+</head>
+<body>
+  <h1>Round Robin Process Visualization</h1>
+
+  <div class="input-section">
+    <label>Process ID: <input type="text" id="processId" /></label>
+    <label>Arrival Time: <input type="number" id="arrivalTime" /></label>
+    <label>Burst Time: <input type="number" id="burstTime" /></label>
+    <button onclick="addProcess()">Add Process</button>
+    <button onclick="runRoundRobin()">Run Round Robin</button>
+    <label>Time Quantum: <input type="number" id="timeQuantum" value="2" /></label>
+  </div>
+
+  <h2>Processes</h2>
+  <table id="processTable">
+    <thead>
+      <tr>
+        <th>Process ID</th>
+        <th>Arrival Time</th>
+        <th>Burst Time</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Gantt Chart</h2>
+  <div id="ganttChart"></div>
+
+  <h2>Timeline</h2>
+  <div id="timeline"></div>
+
+  <h2>Average Times</h2>
+  <div id="avgTimes">
+    <p><strong>Average Turnaround Time:</strong> <span id="avgTurnaroundTime">-</span></p>
+    <p><strong>Average Waiting Time:</strong> <span id="avgWaitingTime">-</span></p>
+  </div>
+
+  <script src="rr_script.js"></script>
+</body>
+</html>

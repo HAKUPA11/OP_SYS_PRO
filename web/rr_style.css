@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 40px;
+  }
+  
+  h1, h2 {
+    color: #333;
+  }
+  
+  .input-section {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    margin-right: 10px;
+  }
+  
+  input, button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  #processTable {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+  }
+  
+  #processTable th, #processTable td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  #ganttChart {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .gantt-block {
+    height: 50px;
+    line-height: 50px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    margin-right: 5px;
+  }
+  
+  .time-marker {
+    font-size: 12px;
+    color: #666;
+    margin-right: 20px;
+  }
+  
+  #timeline {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f8ff;
+    border: 1px solid #ccc;
+  }
+  
+  #results, #avgTimes {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9f5ff;
+    border: 1px solid #ccc;
+  }
+  
+  #avgTimes p {
+    margin: 5px 0;
+    font-size: 16px;
+  }
+  
+  .timeline-event {
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #d1e7fd;
+    border-left: 4px solid #007bff;
+  }
+  
