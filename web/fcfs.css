@@ -1,0 +1,134 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  padding: 20px;
+  margin: 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+  color: #333;
+}
+
+.form {
+  margin-bottom: 20px;
+}
+
+input, button {
+  padding: 8px 12px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.disabled-label {
+  opacity: 0.5;
+  margin-left: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+#ganttChart {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: 10px;
+  background: #f9f9f9;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+}
+
+.gantt-block {
+  height: 50px;
+  line-height: 50px;
+  color: #fff;
+  text-align: center;
+  font-weight: bold;
+  margin-right: 5px;
+  border-radius: 4px;
+}
+
+#timeline {
+  margin-top: 10px;
+  padding: 10px;
+  background: #eef;
+  border: 1px solid #ccc;
+}
+
+.timeline-event {
+  background-color: #d1e7fd;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-left: 4px solid #007bff;
+}
+
+.averages p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.state-simulation {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.state-box {
+  padding: 20px;
+  background: #eee;
+  border: 2px solid #ccc;
+  width: 150px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.5s ease;
+}
+
+.active-state {
+  background: #00c853;
+  color: white;
+  border-color: #00c853;
+}
+
+.state-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#processIndicator {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+}

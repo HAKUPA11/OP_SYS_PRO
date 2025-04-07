@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FCFS Process Visualization</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>FCFS Scheduling Visualization</h1>
+
+    <div class="form">
+      <input type="text" id="processId" placeholder="Process ID" />
+      <input type="number" id="arrivalTime" placeholder="Arrival Time" />
+      <input type="number" id="burstTime" placeholder="Burst Time" />
+      <button onclick="addProcess()">Add Process</button>
+      <label class="disabled-label">
+        <input type="checkbox" id="preemptiveMode" disabled checked /> Preemptive (Disabled for FCFS)
+      </label>
+      <button onclick="runFCFS()">Run FCFS</button>
+    </div>
+
+    <table id="processTable">
+      <thead>
+        <tr>
+          <th>Process ID</th>
+          <th>Arrival Time</th>
+          <th>Burst Time</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h2>Gantt Chart</h2>
+    <div id="ganttChart"></div>
+
+    <h2>Timeline</h2>
+    <div id="timeline"></div>
+
+    <div class="averages">
+      <p>Average Waiting Time: <span id="avgWaitingTime">0</span></p>
+      <p>Average Turnaround Time: <span id="avgTurnaroundTime">0</span></p>
+    </div>
+
+    <h2>State Transition Simulation</h2>
+    <div class="state-simulation">
+      <div class="state-box" id="readyBox">Ready</div>
+      <div class="state-box" id="runningBox">Running</div>
+      <div class="state-box" id="terminatedBox">Terminated</div>
+    </div>
+    <div class="state-controls">
+      <button onclick="playSimulation()">Play</button>
+      <button onclick="pauseSimulation()">Pause</button>
+      <button onclick="restartSimulation()">Restart</button>
+    </div>
+    <div id="processIndicator"></div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
