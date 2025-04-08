@@ -1,39 +1,35 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
   padding: 20px;
-  margin: 0;
+  background: #f2f2f2;
 }
 
 .container {
-  max-width: 1000px;
-  margin: 0 auto;
+  max-width: 900px;
+  margin: auto;
   background: #fff;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
 
 h1, h2 {
+  text-align: center;
   color: #333;
 }
 
-.form {
-  margin-bottom: 20px;
-}
-
-input, button {
-  padding: 8px 12px;
+.form input, .form button {
   margin: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 8px;
+  font-size: 14px;
 }
 
 button {
   background-color: #007bff;
   color: white;
-  cursor: pointer;
   border: none;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 button:hover {
@@ -41,59 +37,46 @@ button:hover {
 }
 
 .disabled-label {
-  opacity: 0.5;
   margin-left: 10px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+  color: #aaa;
 }
 
 #ganttChart {
   display: flex;
-  align-items: center;
-  overflow-x: auto;
-  padding: 10px;
-  background: #f9f9f9;
-  margin-top: 10px;
-  border: 1px solid #ccc;
+  margin: 20px 0;
 }
 
 .gantt-block {
-  height: 50px;
-  line-height: 50px;
-  color: #fff;
-  text-align: center;
+  padding: 10px;
+  margin-right: 2px;
+  color: white;
   font-weight: bold;
-  margin-right: 5px;
-  border-radius: 4px;
+  text-align: center;
 }
 
-#timeline {
-  margin-top: 10px;
+#readyQueueDisplay {
+  margin-top: 20px;
   padding: 10px;
-  background: #eef;
-  border: 1px solid #ccc;
+  border: 2px dashed #999;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #444;
+  font-weight: bold;
+  text-align: center;
+}
+
+#readyQueueDisplay span {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px;
+  background-color: #d1e7fd;
+  border-radius: 5px;
+  color: #007bff;
 }
 
 .timeline-event {
-  background-color: #d1e7fd;
-  padding: 8px;
-  margin-bottom: 5px;
-  border-left: 4px solid #007bff;
-}
-
-.averages p {
-  margin: 8px 0;
-  font-size: 16px;
+  margin: 5px 0;
 }
 
 .state-simulation {
@@ -104,31 +87,31 @@ th, td {
 
 .state-box {
   padding: 20px;
-  background: #eee;
   border: 2px solid #ccc;
+  border-radius: 10px;
   width: 150px;
   text-align: center;
-  border-radius: 8px;
   font-weight: bold;
-  transition: background 0.5s ease;
 }
 
 .active-state {
-  background: #00c853;
-  color: white;
-  border-color: #00c853;
+  background-color: #cfe2ff;
+  border-color: #007bff;
 }
 
-.state-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 15px;
+.timeline-event {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #e7f3ff;
+  border-left: 6px solid #2196f3;
+  border-radius: 4px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  color: #333;
+  transition: transform 0.2s ease;
 }
 
-#processIndicator {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  color: #007bff;
+.timeline-event:hover {
+  transform: scale(1.02);
+  background-color: #d0e9ff;
 }
