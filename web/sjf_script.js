@@ -1,29 +1,35 @@
+// script.js
+
 let processes = [];
 let isPreemptive = false;
 
-
 const preemptiveCheckbox = document.getElementById('preemptiveMode');
 if (preemptiveCheckbox) {
-  preemptiveCheckbox.addEventListener('change', function() {
+  preemptiveCheckbox.addEventListener('change', function () {
     isPreemptive = this.checked;
   });
 }
 
-
-function addProcess() {
+document.getElementById('addProcessBtn').addEventListener('click', () => {
   const processId = document.getElementById('processId').value;
   const arrivalTime = parseInt(document.getElementById('arrivalTime').value);
   const burstTime = parseInt(document.getElementById('burstTime').value);
 
-  if (processId === '' || isNaN(arrivalTime) || isNaN(burstTime)) {
+  if (!processId || isNaN(arrivalTime) || isNaN(burstTime)) {
     alert('Please enter valid process details.');
     return;
   }
 
-  processes.push({ processId, arrivalTime, burstTime, remainingTime: burstTime });
-  updateProcessTable();
-}
+  processes.push({
+    processId,
+    arrivalTime,
+    burstTime,
+    remainingTime: burstTime,
+    addedToReady: false,
+  });
 
+  updateProcessTable();
+});
 
 function updateProcessTable() {
   const tableBody = document.getElementById('processTable').querySelector('tbody');
@@ -35,8 +41,20 @@ function updateProcessTable() {
   });
 }
 
+document.getElementById('resetBtn').addEventListener('click', () => {
+  processes = [];
+  document.getElementById('processTable').querySelector('tbody').innerHTML = '';
+  document.getElementById('ganttChart').innerHTML = '';
+  document.getElementById('timeline').innerHTML = '';
+  document.getElementById('readyBox').innerHTML = '';
+  document.getElementById('runningBox').innerHTML = '';
+  document.getElementById('terminatedBox').innerHTML = '';
+  document.getElementById('avgWaitingTime').textContent = '0';
+  document.getElementById('avgTurnaroundTime').textContent = '0';
+  document.getElementById('currentTimeDisplay').textContent = '0';
+});
 
-function runSJF() {
+document.getElementById('runSJFBtn').addEventListener('click', () => {
   if (processes.length === 0) {
     alert('No processes to run.');
     return;
@@ -44,70 +62,93 @@ function runSJF() {
 
   const ganttChart = document.getElementById('ganttChart');
   const timeline = document.getElementById('timeline');
+  const readyBox = document.getElementById('readyBox');
+  const runningBox = document.getElementById('runningBox');
+  const terminatedBox = document.getElementById('terminatedBox');
   ganttChart.innerHTML = '';
   timeline.innerHTML = '';
+  readyBox.innerHTML = '';
+  runningBox.innerHTML = '';
+  terminatedBox.innerHTML = '';
 
   let currentTime = 0;
   let totalWaitingTime = 0;
   let totalTurnaroundTime = 0;
   let completed = 0;
 
-  function executeNextStep() {
+  function updateCurrentTimeDisplay(time) {
+    document.getElementById('currentTimeDisplay').textContent = time;
+  }
+
+  function executeStep() {
+    updateCurrentTimeDisplay(currentTime);
+
     if (completed === processes.length) {
       const avgWaitingTime = totalWaitingTime / processes.length;
       const avgTurnaroundTime = totalTurnaroundTime / processes.length;
-
       document.getElementById('avgWaitingTime').textContent = avgWaitingTime.toFixed(2);
       document.getElementById('avgTurnaroundTime').textContent = avgTurnaroundTime.toFixed(2);
-
-      const finalTimeMarker = document.createElement('div');
-      finalTimeMarker.classList.add('time-marker');
-      finalTimeMarker.textContent = `${currentTime}`;
-      ganttChart.appendChild(finalTimeMarker);
       return;
     }
 
-    const availableProcesses = processes.filter(p => p.arrivalTime <= currentTime && p.remainingTime > 0);
+    processes.forEach((p) => {
+      if (p.arrivalTime <= currentTime && p.remainingTime > 0 && !p.addedToReady) {
+        const proc = document.createElement('span');
+        proc.textContent = p.processId;
+        readyBox.appendChild(proc);
+        p.addedToReady = true;
+      }
+    });
 
-    if (availableProcesses.length === 0) {
+    const available = processes.filter(p => p.arrivalTime <= currentTime && p.remainingTime > 0);
+    if (available.length === 0) {
       currentTime++;
-      setTimeout(executeNextStep, 500);
+      setTimeout(executeStep, 500);
       return;
     }
 
+    let p;
     if (isPreemptive) {
-      availableProcesses.sort((a, b) => a.remainingTime - b.remainingTime);
-      const p = availableProcesses[0];
+      available.sort((a, b) => a.remainingTime - b.remainingTime);
+      p = available[0];
       p.remainingTime--;
-      currentTime++;
 
       const block = document.createElement('div');
       block.classList.add('gantt-block');
-      block.style.width = `20px`;
+      block.style.width = '20px';
       block.style.backgroundColor = getRandomColor();
       block.textContent = p.processId;
       ganttChart.appendChild(block);
 
-      const timeMarker = document.createElement('div');
-      timeMarker.classList.add('time-marker');
-      timeMarker.textContent = `${currentTime}`;
-      ganttChart.appendChild(timeMarker);
+      const timeLabel = document.createElement('div');
+      timeLabel.classList.add('time-label');
+      timeLabel.textContent = currentTime;
+      ganttChart.appendChild(timeLabel);
+
+      runningBox.innerHTML = '';
+      const runningProc = document.createElement('span');
+      runningProc.textContent = p.processId;
+      runningBox.appendChild(runningProc);
 
       if (p.remainingTime === 0) {
         completed++;
-        const turnaroundTime = currentTime - p.arrivalTime;
+        const turnaroundTime = currentTime + 1 - p.arrivalTime;
         const waitingTime = turnaroundTime - p.burstTime;
         totalTurnaroundTime += turnaroundTime;
         totalWaitingTime += waitingTime;
+        timeline.innerHTML += `<div class="timeline-event">Process ${p.processId} completed at ${currentTime + 1}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}</div>`;
 
-        const event = document.createElement('div');
-        event.classList.add('timeline-event');
-        event.textContent = `Process ${p.processId} completed at ${currentTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}`;
-        timeline.appendChild(event);
+        const term = document.createElement('span');
+        term.textContent = p.processId;
+        terminatedBox.appendChild(term);
+        runningBox.innerHTML = '';
       }
+
+      currentTime++;
+      setTimeout(executeStep, 500);
     } else {
-      availableProcesses.sort((a, b) => a.burstTime - b.burstTime);
-      const p = availableProcesses[0];
+      available.sort((a, b) => a.burstTime - b.burstTime);
+      p = available[0];
 
       const startTime = Math.max(currentTime, p.arrivalTime);
       const endTime = startTime + p.burstTime;
@@ -117,6 +158,11 @@ function runSJF() {
       totalTurnaroundTime += turnaroundTime;
       totalWaitingTime += waitingTime;
 
+      runningBox.innerHTML = '';
+      const runningProc = document.createElement('span');
+      runningProc.textContent = p.processId;
+      runningBox.appendChild(runningProc);
+
       const block = document.createElement('div');
       block.classList.add('gantt-block');
       block.style.width = `${p.burstTime * 20}px`;
@@ -124,27 +170,32 @@ function runSJF() {
       block.textContent = p.processId;
       ganttChart.appendChild(block);
 
-      const timeMarker = document.createElement('div');
-      timeMarker.classList.add('time-marker');
-      timeMarker.textContent = `${startTime}`;
-      ganttChart.appendChild(timeMarker);
+      const timeLabel = document.createElement('div');
+      timeLabel.classList.add('time-label');
+      timeLabel.textContent = startTime;
+      ganttChart.appendChild(timeLabel);
 
-      const event = document.createElement('div');
-      event.classList.add('timeline-event');
-      event.textContent = `Process ${p.processId} started at ${startTime} and ended at ${endTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}`;
-      timeline.appendChild(event);
+      timeline.innerHTML += `<div class="timeline-event">Process ${p.processId} started at ${startTime} and ended at ${endTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}</div>`;
 
-      currentTime = endTime;
+      const term = document.createElement('span');
+      term.textContent = p.processId;
+      setTimeout(() => {
+        terminatedBox.appendChild(term);
+        runningBox.innerHTML = '';
+      }, p.burstTime * 500);
+
       p.remainingTime = 0;
       completed++;
+      for (let t = startTime; t < endTime; t++) {
+        setTimeout(() => updateCurrentTimeDisplay(t + 1), (t - startTime + 1) * 500);
+      }
+      currentTime = endTime;
+      setTimeout(executeStep, p.burstTime * 500);
     }
-
-    setTimeout(executeNextStep, 500);
   }
 
-  executeNextStep();
-}
-
+  executeStep();
+});
 
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
@@ -154,209 +205,3 @@ function getRandomColor() {
   }
   return color;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// let processes = [];
-// let isPreemptive = false;
-
-// // Toggle preemptive mode
-// const preemptiveCheckbox = document.getElementById('preemptiveMode');
-// if (preemptiveCheckbox) {
-//   preemptiveCheckbox.addEventListener('change', function() {
-//     isPreemptive = this.checked;
-//   });
-// }
-
-// // Add a process to the table
-// function addProcess() {
-//   const processId = document.getElementById('processId').value;
-//   const arrivalTime = parseInt(document.getElementById('arrivalTime').value);
-//   const burstTime = parseInt(document.getElementById('burstTime').value);
-
-//   if (processId === '' || isNaN(arrivalTime) || isNaN(burstTime)) {
-//     alert('Please enter valid process details.');
-//     return;
-//   }
-
-//   processes.push({ processId, arrivalTime, burstTime, remainingTime: burstTime, state: 'Ready' });
-//   updateProcessTable();
-// }
-
-// // Update the process table
-// function updateProcessTable() {
-//   const tableBody = document.getElementById('processTable').querySelector('tbody');
-//   tableBody.innerHTML = '';
-
-//   processes.forEach((p) => {
-//     const row = `<tr><td>${p.processId}</td><td>${p.arrivalTime}</td><td>${p.burstTime}</td></tr>`;
-//     tableBody.innerHTML += row;
-//   });
-// }
-
-// // Update state transition diagram
-// function updateStateDiagram(processId, newState) {
-//   const stateDiagram = document.getElementById('stateDiagram');
-//   const stateEntry = document.createElement('div');
-//   stateEntry.classList.add('state-entry');
-//   stateEntry.textContent = `Process ${processId} → ${newState}`;
-//   stateDiagram.appendChild(stateEntry);
-// }
-
-// // Run SJF Scheduling with visualization
-// function runSJF() {
-//   if (processes.length === 0) {
-//     alert('No processes to run.');
-//     return;
-//   }
-
-//   const ganttChart = document.getElementById('ganttChart');
-//   const timeline = document.getElementById('timeline');
-//   ganttChart.innerHTML = '';
-//   timeline.innerHTML = '';
-
-//   let currentTime = 0;
-//   let totalWaitingTime = 0;
-//   let totalTurnaroundTime = 0;
-//   let completed = 0;
-
-//   function executeNextStep() {
-//     if (completed === processes.length) {
-//       const avgWaitingTime = totalWaitingTime / processes.length;
-//       const avgTurnaroundTime = totalTurnaroundTime / processes.length;
-
-//       document.getElementById('avgWaitingTime').textContent = avgWaitingTime.toFixed(2);
-//       document.getElementById('avgTurnaroundTime').textContent = avgTurnaroundTime.toFixed(2);
-//       return;
-//     }
-
-//     const availableProcesses = processes.filter(p => p.arrivalTime <= currentTime && p.remainingTime > 0);
-
-//     if (availableProcesses.length === 0) {
-//       currentTime++;
-//       setTimeout(executeNextStep, 500);
-//       return;
-//     }
-
-//     if (isPreemptive) {
-//       availableProcesses.sort((a, b) => a.remainingTime - b.remainingTime);
-//       const p = availableProcesses[0];
-//       p.remainingTime--;
-//       p.state = 'Running';
-//       updateStateDiagram(p.processId, 'Running');
-//       currentTime++;
-
-//       const block = document.createElement('div');
-//       block.classList.add('gantt-block');
-//       block.style.width = `20px`;
-//       block.style.backgroundColor = getRandomColor();
-//       block.textContent = p.processId;
-//       ganttChart.appendChild(block);
-
-//       const timeMarker = document.createElement('div');
-//       timeMarker.classList.add('time-marker');
-//       timeMarker.textContent = `${currentTime}`;
-//       ganttChart.appendChild(timeMarker);
-
-//       if (p.remainingTime === 0) {
-//         completed++;
-//         p.state = 'Terminated';
-//         updateStateDiagram(p.processId, 'Terminated');
-//         const turnaroundTime = currentTime - p.arrivalTime;
-//         const waitingTime = turnaroundTime - p.burstTime;
-//         totalTurnaroundTime += turnaroundTime;
-//         totalWaitingTime += waitingTime;
-
-//         const event = document.createElement('div');
-//         event.classList.add('timeline-event');
-//         event.textContent = `Process ${p.processId} completed at ${currentTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}`;
-//         timeline.appendChild(event);
-//       }
-//     } else {
-//       availableProcesses.sort((a, b) => a.burstTime - b.burstTime);
-//       const p = availableProcesses[0];
-
-//       const startTime = Math.max(currentTime, p.arrivalTime);
-//       const endTime = startTime + p.burstTime;
-//       const turnaroundTime = endTime - p.arrivalTime;
-//       const waitingTime = turnaroundTime - p.burstTime;
-
-//       totalTurnaroundTime += turnaroundTime;
-//       totalWaitingTime += waitingTime;
-
-//       p.state = 'Running';
-//       updateStateDiagram(p.processId, 'Running');
-
-//       const block = document.createElement('div');
-//       block.classList.add('gantt-block');
-//       block.style.width = `${p.burstTime * 20}px`;
-//       block.style.backgroundColor = getRandomColor();
-//       block.textContent = p.processId;
-//       ganttChart.appendChild(block);
-
-//       const timeMarker = document.createElement('div');
-//       timeMarker.classList.add('time-marker');
-//       timeMarker.textContent = `${startTime}`;
-//       ganttChart.appendChild(timeMarker);
-
-//       const event = document.createElement('div');
-//       event.classList.add('timeline-event');
-//       event.textContent = `Process ${p.processId} started at ${startTime} and ended at ${endTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}`;
-//       timeline.appendChild(event);
-
-//       currentTime = endTime;
-//       p.remainingTime = 0;
-//       p.state = 'Terminated';
-//       updateStateDiagram(p.processId, 'Terminated');
-//       completed++;
-//     }
-
-//     setTimeout(executeNextStep, 500);
-//   }
-
-//   executeNextStep();
-// }
-
-// // Generate random colors for Gantt Chart blocks
-// function getRandomColor() {
-//   const letters = '0123456789ABCDEF';
-//   let color = '#';
-//   for (let i = 0; i < 6; i++) {
-//     color += letters[Math.floor(Math.random() * 16)];
-//   }
-//   return color;
-// }
-
-
-
-
-
-
-
-
-
-
-
-

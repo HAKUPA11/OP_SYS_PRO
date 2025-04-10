@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="rr_style.css" />
   <title>Round Robin Process Visualization</title>
 </head>
@@ -10,12 +10,21 @@
   <h1>Round Robin Process Visualization</h1>
 
   <div class="input-section">
-    <label>Process ID: <input type="text" id="processId" /></label>
-    <label>Arrival Time: <input type="number" id="arrivalTime" /></label>
-    <label>Burst Time: <input type="number" id="burstTime" /></label>
+    <label>Process ID:
+      <input type="text" id="processId" />
+    </label>
+    <label>Arrival Time:
+      <input type="number" id="arrivalTime" />
+    </label>
+    <label>Burst Time:
+      <input type="number" id="burstTime" />
+    </label>
+    <label>Time Quantum:
+      <input type="number" id="timeQuantum" value="2" />
+    </label>
     <button onclick="addProcess()">Add Process</button>
     <button onclick="runRoundRobin()">Run Round Robin</button>
-    <label>Time Quantum: <input type="number" id="timeQuantum" value="2" /></label>
+    <button onclick="resetSimulation()">Reset</button>
   </div>
 
   <h2>Processes</h2>
@@ -36,6 +45,22 @@
   <h2>Timeline</h2>
   <div id="timeline"></div>
 
+  <h2>State Transition Simulation</h2>
+  <div class="queues">
+    <div>
+      <strong>Ready:</strong>
+      <div id="readyBox" class="queue"></div>
+    </div>
+    <div>
+      <strong>Running:</strong>
+      <div id="runningBox" class="queue"></div>
+    </div>
+    <div>
+      <strong>Terminated:</strong>
+      <div id="terminatedBox" class="queue"></div>
+    </div>
+  </div>
+
   <h2>Average Times</h2>
   <div id="avgTimes">
     <p><strong>Average Turnaround Time:</strong> <span id="avgTurnaroundTime">-</span></p>
@@ -44,4 +69,69 @@
 
   <script src="rr_script.js"></script>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Round Robin Scheduling Visualization</title>
+  <link rel="stylesheet" href="rr_style.css">
+</head>
+<body>
+  <h1>Round Robin Scheduling Visualization</h1>
+
+  <div>
+    <label>Process ID: <input type="text" id="processId"></label>
+    <label>Arrival Time: <input type="number" id="arrivalTime"></label>
+    <label>Burst Time: <input type="number" id="burstTime"></label>
+    <button onclick="addProcess()">Add Process</button>
+  </div>
+
+  <div>
+    <label>Time Quantum: <input type="number" id="timeQuantum"></label>
+    <button onclick="runRoundRobin()">Start Simulation</button>
+    <button onclick="pauseSimulation()">Pause</button>
+    <button onclick="resumeSimulation()">Resume</button>
+    <button onclick="resetSimulation()">Reset</button>
+  </div>
+
+  <h2>Processes</h2>
+  <table id="processTable" border="1">
+    <thead>
+      <tr>
+        <th>Process ID</th>
+        <th>Arrival Time</th>
+        <th>Burst Time</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Simulation Time: <span id="simulationTime">0</span></h2>
+
+  <h2>Gantt Chart</h2>
+  <div id="ganttContainer">
+    <div id="ganttChart" class="gantt-chart"></div>
+    <div id="timeLabels" class="time-labels"></div>
+  </div>
+  
+
+  <h2>Queues</h2>
+  <div>
+    <strong>Ready Queue:</strong> <div id="readyBox" class="queue-box"></div>
+    <strong>Running:</strong> <div id="runningBox" class="queue-box"></div>
+    <strong>Terminated:</strong> <div id="terminatedBox" class="queue-box"></div>
+  </div>
+
+  <h2>Timeline</h2>
+  <div id="timeline"></div>
+
+  <h2>Average Times</h2>
+  <p>Average Waiting Time: <span id="avgWaitingTime">-</span></p>
+  <p>Average Turnaround Time: <span id="avgTurnaroundTime">-</span></p>
+
+  <script src="rr_script.js"></script>
+</body>
 </html>
+

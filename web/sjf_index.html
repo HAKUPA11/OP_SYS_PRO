@@ -1,111 +1,56 @@
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="sjf_style.css" />
-  <title>SJF Process Visualization Tool</title>
-</head>
-<body>
-  <h1>SJF Process Visualization</h1>
-
-  <div class="input-section">
-    <label>Process ID: <input type="text" id="processId" /></label>
-    <label>Arrival Time: <input type="number" id="arrivalTime" /></label>
-    <label>Burst Time: <input type="number" id="burstTime" /></label>
-    <button onclick="addProcess()">Add Process</button>
-    <button onclick="runSJF()">Run SJF</button>
-    <label class="preemptive-label">
-      <input type="checkbox" id="preemptiveMode" /> Enable Preemptive Mode
-    </label>
-  </div>
-
-  <h2>Processes</h2>
-  <table id="processTable">
-    <thead>
-      <tr>
-        <th>Process ID</th>
-        <th>Arrival Time</th>
-        <th>Burst Time</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <h2>Gantt Chart</h2>
-  <div id="ganttChart"></div>
-
-  <h2>Timeline</h2>
-  <div id="timeline"></div>
-
-  <h2>Average Times</h2>
-  <div id="avgTimes">
-    <p><strong>Average Turnaround Time:</strong> <span id="avgTurnaroundTime">-</span></p>
-    <p><strong>Average Waiting Time:</strong> <span id="avgWaitingTime">-</span></p>
-  </div>
-
-  <script src="sjf_script.js"></script>
-</body>
-</html> 
-
-
-
-
-
-<!-- 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SJF Scheduling Visualizer</title>
   <link rel="stylesheet" href="sjf_style.css" />
-  <title>SJF Process Visualization Tool</title>
 </head>
 <body>
-  <h1>SJF Process Visualization Tool</h1>
+  <div class="container">
+    <h1>SJF Scheduling Visualizer</h1>
+    <label><input type="checkbox" id="preemptiveMode"> Preemptive</label>
+    <div class="form">
+      <input type="text" id="processId" placeholder="Process ID">
+      <input type="number" id="arrivalTime" placeholder="Arrival Time">
+      <input type="number" id="burstTime" placeholder="Burst Time">
+      <button id="addProcessBtn">Add Process</button>
+      <button id="runSJFBtn">Run Simulation</button>
+      <button id="resetBtn">Reset Simulation</button>
+    </div>
 
-  <div class="input-section">
-    <label>Process ID: <input type="text" id="processId" /></label>
-    <label>Arrival Time: <input type="number" id="arrivalTime" /></label>
-    <label>Burst Time: <input type="number" id="burstTime" /></label>
-    <button onclick="addProcess()">Add Process</button>
-    <button onclick="runSJF()">Run SJF</button>
-    <label class="preemptive-label">
-      <input type="checkbox" id="preemptiveMode" /> Enable Preemptive Mode
-    </label>
-  </div>
+    <div class="current-time">Current Time: <span id="currentTimeDisplay">0</span></div>
 
-  <h2>Processes</h2>
-  <table id="processTable" border="1">
-    <thead>
-      <tr>
-        <th>Process ID</th>
-        <th>Arrival Time</th>
-        <th>Burst Time</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <h2>Process List</h2>
+    <table id="processTable">
+      <thead>
+        <tr><th>Process ID</th><th>Arrival Time</th><th>Burst Time</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <h2>State Transition Diagram</h2>
-  <div id="stateDiagram"></div>
+    <h2>Gantt Chart</h2>
+    <div id="ganttChartWrapper">
+      <div id="ganttTimeMarkers" class="gantt-time-markers"></div>
+      <div id="ganttChart" class="gantt-chart"></div>
+    </div>
 
-  <h2>Gantt Chart</h2>
-  <div id="ganttChart"></div>
+    <h2>Timeline</h2>
+    <div id="timeline" class="timeline"></div>
 
-  <h2>Timeline</h2>
-  <div id="timeline"></div>
+    <h2>Process States</h2>
+    <div class="queues">
+      <div><strong>Ready:</strong> <div id="readyBox" class="queue"></div></div>
+      <div><strong>Running:</strong> <div id="runningBox" class="queue"></div></div>
+      <div><strong>Terminated:</strong> <div id="terminatedBox" class="queue"></div></div>
+    </div>
 
-  <h2>Average Times</h2>
-  <div id="avgTimes">
-    <p><strong>Average Turnaround Time:</strong> <span id="avgTurnaroundTime">-</span></p>
-    <p><strong>Average Waiting Time:</strong> <span id="avgWaitingTime">-</span></p>
+    <div class="stats">
+      <p>Average Waiting Time: <span id="avgWaitingTime">0</span></p>
+      <p>Average Turnaround Time: <span id="avgTurnaroundTime">0</span></p>
+    </div>
   </div>
 
   <script src="sjf_script.js"></script>
 </body>
-</html>  -->
-
+</html>
