@@ -281,23 +281,47 @@ function runRoundRobin() {
         endTimeLabel.classList.add('time-label');
         timeLabels.appendChild(endTimeLabel);
 
+        // if (p.remainingTime === 0) {
+        //   p.completionTime = currentTime;
+        //   completed++;
+
+        //   const turnaroundTime = p.completionTime - p.arrivalTime;
+        //   const waitingTime = turnaroundTime - p.burstTime;
+
+        //   totalTurnaroundTime += turnaroundTime;
+        //   totalWaitingTime += waitingTime;
+
+        //   const event = document.createElement('div');
+        //   event.classList.add('timeline-event');
+        //   event.textContent = `Process ${p.processId} completed at ${currentTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}`;
+        //   timeline.appendChild(event);
+        // } else {
+        //   queue.push(p);
+        // }
         if (p.remainingTime === 0) {
           p.completionTime = currentTime;
           completed++;
-
+        
           const turnaroundTime = p.completionTime - p.arrivalTime;
           const waitingTime = turnaroundTime - p.burstTime;
-
+        
           totalTurnaroundTime += turnaroundTime;
           totalWaitingTime += waitingTime;
-
+        
           const event = document.createElement('div');
           event.classList.add('timeline-event');
           event.textContent = `Process ${p.processId} completed at ${currentTime}. Turnaround Time: ${turnaroundTime}, Waiting Time: ${waitingTime}`;
           timeline.appendChild(event);
+        
+          // Immediately update the terminated box
+          const terminatedBox = document.getElementById('terminatedBox');
+          const span = document.createElement('span');
+          span.textContent = p.processId;
+          terminatedBox.appendChild(span);
         } else {
           queue.push(p);
         }
+        
 
         if (completed === processes.length) {
           simulationRunning = false;
@@ -352,4 +376,3 @@ function getRandomColor() {
   }
   return color;
 }
-

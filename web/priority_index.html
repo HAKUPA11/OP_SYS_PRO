@@ -1,27 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="priority_style.css" />
-  <title>Priority Scheduling Visualization</title>
+  <meta charset="UTF-8">
+  <title>Priority Scheduling Simulation</title>
+  <link rel="stylesheet" href="priority_style.css">
 </head>
 <body>
-  <h1>Priority Scheduling Visualization</h1>
+  <h1>PRIORITY SCHEDULING VISUALISER</h1>
 
-  <div class="input-section">
-    <label>Process ID: <input type="text" id="processId" /></label>
-    <label>Arrival Time: <input type="number" id="arrivalTime" /></label>
-    <label>Burst Time: <input type="number" id="burstTime" /></label>
-    <label>Priority: <input type="number" id="priority" /></label>
-    <button onclick="addProcess()">Add Process</button>
-    <button onclick="runPriorityScheduling()">Run Priority Scheduling</button>
-    <label class="preemptive-label">
-      <input type="checkbox" id="preemptiveMode" /> Enable Preemptive Mode
+  <!-- Input Controls -->
+  <div class="controls">
+    <input type="text" id="processId" placeholder="Process ID">
+    <input type="number" id="arrivalTime" placeholder="Arrival Time">
+    <input type="number" id="burstTime" placeholder="Burst Time">
+    <input type="number" id="priority" placeholder="Priority">
+    <label>
+      <input type="checkbox" id="preemptiveMode"> Preemptive
     </label>
+    <button onclick="addProcess()">Add Process</button>
+    <button onclick="runPriorityScheduling()">Start Simulation</button>
   </div>
 
-  <h2>Processes</h2>
+  <!-- Process Table -->
   <table id="processTable">
     <thead>
       <tr>
@@ -34,18 +35,39 @@
     <tbody></tbody>
   </table>
 
-  <h2>Gantt Chart</h2>
-  <div id="ganttChart"></div>
-
-  <h2>Timeline</h2>
-  <div id="timeline"></div>
-
-  <h2>Average Times</h2>
-  <div id="avgTimes">
-    <p><strong>Average Turnaround Time:</strong> <span id="avgTurnaroundTime">-</span></p>
-    <p><strong>Average Waiting Time:</strong> <span id="avgWaitingTime">-</span></p>
+  <!-- State Simulation -->
+  <div class="state-container">
+    <div class="state-box">
+      <h3>Ready</h3>
+      <div id="readyBox" class="process-box"></div>
+    </div>
+    <div class="state-box">
+      <h3>Running</h3>
+      <div id="runningBox" class="process-box"></div>
+    </div>
+    <div class="state-box">
+      <h3>Terminated</h3>
+      <div id="terminatedBox" class="process-box"></div>
+    </div>
   </div>
 
+  <!-- Horizontal Ready Queue -->
+  <div class="queue-label">Ready Queue</div>
+  <div id="readyQueueBox" class="horizontal-queue"></div>
+
+  <!-- Gantt Chart Timeline -->
+  <div class="timeline-label">Gantt Chart</div>
+  <div id="ganttChart" class="gantt-chart"></div>
+  <div id="timeline" class="timeline-logs"></div>
+
+  <!-- Timer & Averages -->
+  <div class="metrics">
+    <span id="timerDisplay">Timer: 0</span>
+    <span id="avgWaitingTime">Avg WT: --</span>
+    <span id="avgTurnaroundTime">Avg TAT: --</span>
+  </div>
+
+  <!-- Main Script -->
   <script src="priority_script.js"></script>
 </body>
 </html>
